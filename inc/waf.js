@@ -14,7 +14,7 @@ function metrics_waf(name) {
 		url: "options.py",
 		data: {
 			metrics_waf: name,
-			enable: enable,
+			enable: 1,
 			token: $('#token').val()
 		},
 		type: "GET",
@@ -23,7 +23,7 @@ function metrics_waf(name) {
 			setTimeout(function() {
 				$( "#"+name ).parent().parent().removeClass( "update" );
 			}, 2500 );
-		}					
+		}
 	} );
 }
 function installWaf(ip) {
@@ -36,7 +36,7 @@ function installWaf(ip) {
 			token: $('#token').val()
 		},
 		type: "GET",
-		success: function( data ) { 
+		success: function( data ) {
 		data = data.replace(/\s+/g,' ');
 			if (data.indexOf('error') != '-1' || data.indexOf('Failed') != '-1') {
 				$("#ajax").html('<div class="alert alert-danger" style="margin: 15px;">'+data+'</data>');
@@ -49,7 +49,7 @@ function installWaf(ip) {
 				$('.alert-warning').remove();
 				$("#ajax").html('<div class="alert alert-success">'+data+'</data>');
 				showOverviewWaf()
-			}	
+			}
 		}
-	} );	
+	} );
 }

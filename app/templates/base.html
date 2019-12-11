@@ -1,7 +1,7 @@
 <html>
 	<head>
 		<title>{{title}} - HAproxy-WI</title>
-		<meta charset="UTF-8">	
+		<meta charset="UTF-8">
 		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 		<meta http-equiv="Pragma" content="no-cache" />
 		<meta http-equiv="Expires" content="0" />
@@ -41,61 +41,54 @@
 						<span class="ui-icon ui-icon-arrowthick-1-w" id="arrow"></span>
 					</span>
 				</a>
-			</div>	
+			</div>
 			<div id="top-link" class="top-link">
 				<nav id="menu">
 					<ul class="menu">
-						<li class="p_menu"><a title="Statistics, monitoring and logs" class="stats">Stats</a>			
+						<li class="p_menu"><a title="Statistics, monitoring and logs" class="stats">Stats</a>
 							<ul class="v_menu">
 								<li><a href=/app/overview.py title="Server and service status" class="overview-link head-submenu">Overview</a></li>
 								<li><a href=/app/viewsttats.py title="Show stats" class="stats head-submenu">Stats</a></li>
-								<li><a href=/app/logs.py title="View logs" class="logs head-submenu"> Logs</a></li>	
+								<li><a href=/app/logs.py title="View logs" class="logs head-submenu"> Logs</a></li>
 								<li><a href=/app/edit.py title="Runtime API" class="runtime head-submenu">Runtime API</a></li>
 								<li><a href=/app/metrics.py title="Metrics" class="metrics head-submenu">Metrics</a></li>
 							</ul>
 						</li>
-						<li class="p_menu"><a title="Actions with Haproxy configs" class="config-show">Haproxy</a>			
-						{% if user %}	
+						<li class="p_menu"><a title="Actions with Haproxy configs" class="config-show">Haproxy</a>
+						{% if user %}
 							<ul class="v_menu">
 								<li><a href=/app/config.py title="Working with Haproxy Configs" class="edit head-submenu">Configs</a> </li>
 							{% if role <= 2 %}
 								<li><a href=/app/add.py#listner title="Add single listen" class="add head-submenu" id="add1">Add listen</a></li>
 								<li><a href=/app/add.py#frontend title="Add single frontend" class="add head-submenu" id="add2">Add frontend</a></li>
 								<li><a href=/app/add.py#backend title="Add single backend" class="add head-submenu" id="add3">Add backend</a></li>
-								<li><a href=/app/add.py#ssl title="Upload SSL cert" class="cert head-submenu" id="add4">SSL</a></li>	
-								<li><a href=/app/lists.py title="Manage black and white lists" class="lists head-submenu">Lists</a> </li>	
-								<li><a href=/app/waf.py title="Web application firewall" class="waf head-submenu">WAF</a> </li>	
+								<li><a href=/app/add.py#ssl title="Upload SSL cert" class="cert head-submenu" id="add4">SSL</a></li>
+								<li><a href=/app/lists.py title="Manage black and white lists" class="lists head-submenu">Lists</a> </li>
+								<li><a href=/app/waf.py title="Web application firewall" class="waf head-submenu">WAF</a> </li>
 								<li><a href=/app/ihap.py title="Installation HAProxy" class="hap head-submenu">Installation</a> </li>
 							{% endif %}
 							</ul>
 						</li>
 						{% if role <= 2 %}
 							<li class="p_menu">
-								<a title="Actions with configs" class="version">Versions</a>	
+								<a title="Actions with configs" class="version">Versions</a>
 								<ul class="v_menu">
 									<li><a href=/app/configver.py title="Upload old versions configs" class="upload head-submenu">Upload</a></li>
 						{% endif %}
 							{% if role <= 2 %}
 								<li><a href=/app/delver.py title="Delete old versions configs" class="deleteVer head-submenu">Delete</a></li>
-							{% endif %}	
+							{% endif %}
 									</ul>
-							</li>	
+							</li>
 						{% if role <= 2 %}
 							<li class="p_menu">
 								<a title="Keepalived" class="ha">Keepalived</a>
 								<ul class="v_menu">
 									<li><a href=/app/ha.py title="Create HA cluster" class="keepalived head-submenu">HA</a></li>
-									<li><a href=/app/keepalivedconfig.py title="Edit keepalived config" class="edit head-submenu">Edit config</a></li>		
+									<li><a href=/app/keepalivedconfig.py title="Edit keepalived config" class="edit head-submenu">Edit config</a></li>
 								</ul>
 							</li>
-							<li class="p_menu">
-								<a title="Servers manage" class="runtime">Servers</a>
-								<ul class="v_menu">
-									<li><a href=/app/servers.py#users title="Actions with users" class="users head-submenu">Users</a></li>
-									<li><a href=/app/servers.py#servers title="Server manage" class="runtime head-submenu">Servers</a></li>
-									<li><a href=/app/servers.py#ssh title="Manage SSH credentials" class="admin head-submenu">SSH credentials</a></li>		
-								</ul>
-							</li>
+
 						{% endif %}
 						{% if role <= 1 %}
 							<li class="p_menu">
@@ -110,7 +103,7 @@
 									<li><a href=/app/viewlogs.py title="View internal logs" class="logs head-submenu">Internal logs</a></li>
 								</ul>
 							</li>
-						{% endif %}	
+						{% endif %}
 					{% endif %}
 					</ul>
 				</nav>
@@ -127,7 +120,7 @@
 				<h2>
 					{{title}}
 					{% if user %}
-						<a href=/app/login.py?logout=logout title="Logout, user name: {{ user }}" class="login"> Logout</a>						
+						<a href=/app/login.py?logout=logout title="Logout, user name: {{ user }}" class="login"> Logout</a>
 					{% else %}
 						<a href=/app/login.py title="Login" class="login"> Login</a>
 					{% endif %}
@@ -137,7 +130,7 @@
 							<a onclick="pauseAutoResume()" class="auto-refresh-resume" style="display: none; margin-top: 4px;"></a>
 							<a id="0"><img  src="/image/pic/update.png" alt="restart" class="icon"> Auto-refresh</a>
 							<a id="1" style="display: none;"><img  src="/image/pic/update.png" alt="restart" class="icon"> Auto-refresh</a>
-						</span>		
+						</span>
 					{% endif %}
 				</h2>
 			{% endif %}
@@ -150,7 +143,7 @@
 						<div class="auto-refresh-ul">
 							<ul>
 								<li>
-									<a class="ui-button ui-widget ui-corner-all" onclick="setRefreshInterval(0)" title="Turn off auto-refresh">Off</a> 
+									<a class="ui-button ui-widget ui-corner-all" onclick="setRefreshInterval(0)" title="Turn off auto-refresh">Off</a>
 								</li>
 							</ul>
 						</div>
@@ -166,7 +159,7 @@
 									<a title="Auto-refresh every 30 seconds" onclick="setRefreshInterval(30000)">30 seconds</a>
 								</li>
 								<li>
-									<a title="Auto-refresh ever 45 seconds" onclick="setRefreshInterval(45000)">45 seconds</a>		
+									<a title="Auto-refresh ever 45 seconds" onclick="setRefreshInterval(45000)">45 seconds</a>
 								</li>
 							</ul>
 						</div>
@@ -182,7 +175,7 @@
 									<a title="Auto-refresh every 15 minutes" onclick="setRefreshInterval(900000)">15 minutes</a>
 								</li>
 								<li>
-									<a title="Auto-refresh ever 30 minutes" onclick="setRefreshInterval(1800000)">30 minutes</a>		
+									<a title="Auto-refresh ever 30 minutes" onclick="setRefreshInterval(1800000)">30 minutes</a>
 								</li>
 							</ul>
 						</div>
@@ -198,7 +191,7 @@
 									<a title="Auto-refresh every 12 hour" onclick="setRefreshInterval(43200000)">12 hour</a>
 								</li>
 								<li>
-									<a title="Auto-refresh ever 1 day" onclick="setRefreshInterval(86400000)">1 day</a>		
+									<a title="Auto-refresh ever 1 day" onclick="setRefreshInterval(86400000)">1 day</a>
 								</li>
 							</ul>
 						</div>
@@ -215,6 +208,6 @@
 			{% block content %}{% endblock %}
 			<div id="ajax-compare"></div>
 			<div id="ajax"></div>
-		</div>			
+		</div>
 	</body>
 </html>

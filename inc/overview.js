@@ -14,12 +14,12 @@ function ajaxActionServers(action, id) {
 					if( data ==  'Bad config, check please ' ) {
 						alert(data);
 					} else {
-						setTimeout(showOverview, 2000)					
+						setTimeout(showOverview, 2000)
 					}
 				},
 				error: function(){
 					alert(w.data_error);
-				}					
+				}
 			} );
 	}
 function ajaxActionWafServers(action, id) {
@@ -36,12 +36,12 @@ function ajaxActionWafServers(action, id) {
 					if( data ==  'Bad config, check please ' ) {
 						alert(data);
 					} else {
-						setTimeout(showOverviewWaf, 2000)						
+						setTimeout(showOverviewWaf, 2000)
 					}
 				},
 				error: function(){
 					alert(w.data_error);
-				}					
+				}
 			} );
 	}
 $( function() {
@@ -56,6 +56,10 @@ $( function() {
 	$('.restart').click(function() {
 		var id = $(this).attr('id');
 		confirmAjaxAction("restart", "hap", id);
+	});
+	$('.reload').click(function() {
+		var id = $(this).attr('id');
+		confirmAjaxAction("reload", "hap", id);
 	});
 	$('.start-waf').click(function() {
 		var id = $(this).attr('id');
@@ -73,7 +77,7 @@ $( function() {
 		if($( "#show-all-users" ).text() == "Show all") {
 			$( ".show-users" ).show("fast");
 			$( "#show-all-users" ).text("Hide");
-			$( "#show-all-users" ).attr("title", "Hide all users"); 
+			$( "#show-all-users" ).attr("title", "Hide all users");
 		} else {
 			$( ".show-users" ).hide("fast");
 			$( "#show-all-users" ).attr("title", "Show all users");

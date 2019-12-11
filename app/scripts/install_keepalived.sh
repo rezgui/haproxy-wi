@@ -13,7 +13,7 @@ else
 fi
 
 if [ $? -eq 1 ]
-then	
+then
 	echo "error: Can't install keepalived <br /><br />"
     exit 1
 fi
@@ -28,7 +28,7 @@ global_defs {
 vrrp_script chk_haproxy { # Requires keepalived-1.1.13
     script "pidof haproxy"
     interval 2 # check every 2 seconds
-    weight 3 # addA 3 points of prio if OK
+    weight 3 # add 3 points of prio if OK
 }
 
 vrrp_instance VI_1 {
@@ -69,8 +69,8 @@ sudo systemctl enable keepalived
 sudo systemctl restart keepalived
 sudo echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 sudo sysctl -p
-sudo firewall-cmd --direct --permanent --add-rule ipv4 filter INPUT 0 --in-interface enp0s8 --destination 224.0.0.18 --protocol vrrp -j ACCEPT
-sudo firewall-cmd --direct --permanent --add-rule ipv4 filter OUTPUT 0 --out-interface enp0s8 --destination 224.0.0.18 --protocol vrrp -j ACCEPT
+sudo firewall-cmd --direct --permanent --add-rule ipv4 filter INPUT 0 --in-interface eth0 --destination 224.0.0.18 --protocol vrrp -j ACCEPT
+sudo firewall-cmd --direct --permanent --add-rule ipv4 filter OUTPUT 0 --out-interface eth0 --destination 224.0.0.18 --protocol vrrp -j ACCEPT
 sudo firewall-cmd --reload
 
 if [ $? -eq 1 ]

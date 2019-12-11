@@ -21,6 +21,9 @@
 			<a id="{{ service.1 }}" class="restart" title="Restart HAProxy service">
 				<img src=/image/pic/update.png alt="restart" class="icon">
 			</a>
+			<a id="{{ service.1 }}" class="reload" title="Reload HAProxy service">
+				<img src=/image/pic/update2.png alt="restart" class="icon">
+			</a>
 		{% endif %}
 		{% if role <= 2 %}
 			<a href="/app/config.py?serv={{ service.1 }}" target="_blank" title="Working with HAProxy configs">
@@ -28,7 +31,7 @@
 			</a>
 			<a href="/app/viewsttats.py?serv={{ service.1 }}" target="_blank"  title="Show stats">
 				<img src="/image/pic/show.png" alt="show" class="icon">
-			</a>	
+			</a>
 		{% endif %}
 		</td>
 		<td>

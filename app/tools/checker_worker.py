@@ -14,7 +14,7 @@ class GracefulKiller:
 	def __init__(self):
 		signal.signal(signal.SIGINT, self.exit_gracefully)
 		signal.signal(signal.SIGTERM, self.exit_gracefully)
-	
+
 	def exit_gracefully(self,signum, frame):
 		self.kill_now = True
 
@@ -26,19 +26,20 @@ def main(serv, port):
 	readstats = ""
 	killer = GracefulKiller()
 	old_stat_service = ""
-	
+
 	while True:
-		try:			
+		try:
 			readstats = subprocess.check_output(["echo show stat | nc "+serv+" "+port], shell=True)
 		except CalledProcessError as e:
-			if firstrun == False:	
+			if firstrun == False:
 				cur_stat_service = "error"
 				if old_stat_service != cur_stat_service:
 					alert = "Can't connect to HAProxy service at " + serv
-					funct.telegram_send_mess(str(alert), ip=serv)
+					#funct.telegram_send_mess(str(alert), ip=serv)
+					funct.mail_send_mess(str(alert), ip=serv)
 					funct.logging("localhost", " "+alert, alerting=1)
 
-			firstrun = False				
+			firstrun = False
 			old_stat_service = cur_stat_service
 			continue
 		except OSError as e:
@@ -46,19 +47,20 @@ def main(serv, port):
 			sys.exit()
 		else:
 			cur_stat_service = "Ok"
-			if firstrun == False:	
+			if firstrun == False:
 				if old_stat_service != cur_stat_service:
 					alert = "Now UP HAProxy service at " + serv
-					funct.telegram_send_mess(str(alert), ip=serv)
+					#funct.telegram_send_mess(str(alert), ip=serv)
+					funct.mail_send_mess(str(alert), ip=serv)
 					funct.logging("localhost", " "+alert, alerting=1)
 					firstrun = True
-					time.sleep(5)	
+					time.sleep(5)
 			old_stat_service = cur_stat_service
-			
+
 		vips = readstats.splitlines()
 
 		for i in range(0,len(vips)):
-			if "UP" in str(vips[i]):		
+			if "UP" in str(vips[i]):
 				currentstat.append("UP")
 			elif "DOWN" in str(vips[i]):
 				currentstat.append("DOWN")
@@ -73,32 +75,33 @@ def main(serv, port):
 					servername = servername.split(",")
 					realserver = servername[0]
 					server = servername[1]
-					alert = "Backend: "+realserver[2:]+", server: "+server+"  has changed status and is now "+ currentstat[i] + " at " + serv 
-					funct.telegram_send_mess(str(alert), ip=serv)
+					alert = "Backend: "+realserver[2:]+", server: "+server+"  has changed status and is now "+ currentstat[i] + " at " + serv
+					#funct.telegram_send_mess(str(alert), ip=serv)
+					funct.mail_send_mess(str(alert), ip=serv)
 					funct.logging("localhost", " "+alert, alerting=1)
 		firstrun = False
 		oldstat = []
 		oldstat = currentstat
 		currentstat = []
-		time.sleep(60)	
-				
+		time.sleep(60)
+
 		if killer.kill_now:
 			break
-	
+
 	funct.logging("localhost", " Worker shutdown for: "+serv, alerting=1)
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Check HAProxy servers state.', prog='check_haproxy.py', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-	
+
 	parser.add_argument('IP', help='Start check HAProxy server state at this ip', nargs='?', type=str)
 	parser.add_argument('--port', help='Start check HAProxy server state at this port', nargs='?', default=1999, type=int)
-					
+
 	args = parser.parse_args()
 	if args.IP is None:
 		parser.print_help()
 		import sys
 		sys.exit()
-	else: 
+	else:
 		try:
 			main(args.IP, args.port)
 		except KeyboardInterrupt:
