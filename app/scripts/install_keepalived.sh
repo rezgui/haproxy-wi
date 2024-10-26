@@ -7,9 +7,7 @@ if [ -f $CONF ];then
 fi
 
 if hash apt-get 2>/dev/null; then
-	sudo apt-get install keepalived  -y
-else
-	sudo yum install keepalived -y > /dev/null
+	sudo apt install keepalived  -y
 fi
 
 if [ $? -eq 1 ]
@@ -69,9 +67,6 @@ sudo systemctl enable keepalived
 sudo systemctl restart keepalived
 sudo echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf
 sudo sysctl -p
-sudo firewall-cmd --direct --permanent --add-rule ipv4 filter INPUT 0 --in-interface eth0 --destination 224.0.0.18 --protocol vrrp -j ACCEPT
-sudo firewall-cmd --direct --permanent --add-rule ipv4 filter OUTPUT 0 --out-interface eth0 --destination 224.0.0.18 --protocol vrrp -j ACCEPT
-sudo firewall-cmd --reload
 
 if [ $? -eq 1 ]
 then
