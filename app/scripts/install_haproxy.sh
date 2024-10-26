@@ -32,30 +32,9 @@ if [ -f /etc/haproxy/haproxy.cfg ];then
 fi
 set +x
 if hash apt-get 2>/dev/null; then
-	sudo apt-get install haproxy socat -y
-else
-	#wget http://cbs.centos.org/kojifiles/packages/haproxy/1.8.1/5.el7/x86_64/haproxy18-1.8.1-5.el7.x86_64.rpm 
-	wget http://au1.mirror.crc.id.au/repo/el7-extra/x86_64/haproxy-1.9.7-1.el7.x86_64.rpm
-	#sudo yum install haproxy18-1.8.1-5.el7.x86_64.rpm -y
-	sudo yum install haproxy-1.9.1-1.el7.x86_64.rpm -y
+	sudo apt install haproxy socat -y
 fi
 
-if [ $? -eq 1 ]
-then
-	sudo yum install wget socat -y > /dev/null
-	#wget http://cbs.centos.org/kojifiles/packages/haproxy/1.8.1/5.el7/x86_64/haproxy18-1.8.1-5.el7.x86_64.rpm 
-	wget http://au1.mirror.crc.id.au/repo/el7-extra/x86_64/haproxy-1.9.1-1.el7.x86_64.rpm
-	#sudo yum install haproxy18-1.8.1-5.el7.x86_64.rpm -y
-	sudo yum install haproxy-1.9.1-1.el7.x86_64.rpm -y
-fi
-if [ $? -eq 1 ]
-then
-	if hash apt-get 2>/dev/null; then
-		sudo apt-get install socat  -y
-	else
-		sudo yum install haproxy socat -y > /dev/null
-	fi
-fi
 
 bash -c 'echo "" > /tmp/haproxy.cfg'
 bash -c cat << EOF > /tmp/haproxy.cfg
@@ -106,10 +85,6 @@ EOF'
 sudo sed -i 's/#$UDPServerRun 514/$UDPServerRun 514/g' /etc/rsyslog.conf
 sudo sed -i 's/#$ModLoad imudp/$ModLoad imudp/g' /etc/rsyslog.conf 
 
-sudo firewall-cmd --zone=public --add-port=8085/tcp --permanent
-sudo firewall-cmd --reload
-sudo setenforce 0
-sudo sed -i 's/SELINUX=enforcing/SELINUX=permissive/' /etc/selinux/config 
 sudo systemctl enable haproxy
 sudo systemctl restart haproxy
 
