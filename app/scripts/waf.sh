@@ -35,10 +35,6 @@ if [ -f $HAPROXY_PATH/waf/modsecurity.conf  ];then
 fi
 if hash apt-get 2>/dev/null; then
 	sudo apt install libevent-dev apache2-dev libpcre3-dev libxml2-dev gcc -y
-else
-	wget -O /tmp/yajl-devel-2.0.4-4.el7.x86_64.rpm http://rpmfind.net/linux/centos/7.6.1810/os/x86_64/Packages/yajl-devel-2.0.4-4.el7.x86_64.rpm >> /dev/null
-	wget -O /tmp/libevent-devel-2.0.21-4.el7.x86_64.rpm http://mirror.centos.org/centos/7/os/x86_64/Packages/libevent-devel-2.0.21-4.el7.x86_64.rpm >> /dev/null
-	sudo yum install /tmp/libevent-devel-2.0.21-4.el7.x86_64.rpm /tmp/yajl-devel-2.0.4-4.el7.x86_64.rpm  httpd-devel libxml2-devel gcc curl-devel -y >> /dev/null
 fi
 
 wget -O /tmp/modsecurity-2.9.2.tar.gz https://www.modsecurity.org/tarball/2.9.2/modsecurity-2.9.2.tar.gz >> /dev/null
@@ -80,8 +76,6 @@ sudo mkdir $HAPROXY_PATH/waf/rules
 cd /tmp/haproxy-$VERSION/contrib/modsecurity
 if hash apt-get 2>/dev/null; then
 	sudo make MODSEC_INC=/tmp/modsecurity-2.9.2/INSTALL/include MODSEC_LIB=/tmp/modsecurity-2.9.2/INSTALL/include APR_INC=/usr/include/apr-1 >> /dev/null
-else
-	sudo make MODSEC_INC=/tmp/modsecurity-2.9.2/INSTALL/include MODSEC_LIB=/tmp/modsecurity-2.9.2/INSTALL/include APACHE2_INC=/usr/include/httpd/ APR_INC=/usr/include/apr-1 >> /dev/null
 fi
 if [ $? -eq 1 ]; then
 	echo -e "Can't compile waf application"
@@ -202,9 +196,6 @@ fi
 sudo systemctl daemon-reload
 sudo systemctl enable waf
 sudo systemctl restart waf
-sudo rm -f /tmp/libevent-devel-2.0.21-4.el7.x86_64.rpm
-sudo rm -f /tmp/modsecurity-2.9.2.tar.gz
-sudo rm -f /tmp/yajl-devel-2.0.4-4.el7.x86_64.rpm
 #sudo rm -rf /tmp/haproxy-$VERSION
 sudo rm -rf /tmp/haproxy-$VERSION.tar.gz
 #sudo rm -rf /tmp/modsecurity-2.9.2
