@@ -1,9 +1,6 @@
 # Haproxy web interface
 Web interface(user-friendly web GUI, alerting, monitoring and secure) for managing Haproxy servers. Leave your [feedback](https://github.com/rezgui/haproxy-wi/issues)
 
-# Youtube
-[Demo video](https://www.youtube.com/channel/UCo0lCg24j-H4f0S9kMjp-_w)
-
 ![alt text](image/haproxy-wi-config-show.jpeg "Show config page")
 
 # Features:
