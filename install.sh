@@ -31,103 +31,44 @@ fi
 if [[ -n "$CHHOME_HAPROXY" ]];then
         HOME_HAPROXY_WI=$CHHOME_HAPROXY
 fi
-echo "################################"
-echo ""
-echo ""
-echo -e "Installing Required Software"
-echo ""
-echo ""
-echo "################################"
+
+echo -e "\n###########################################################"
+echo -e "# Installing Required Software ...."
+echo -e "###########################################################"
 
 if hash apt-get 2>/dev/null; then
-	apt-get install git  net-tools lshw dos2unix apache2 gcc netcat python3.5 mod_ssl python3-pip g++ freetype2-demos libatlas-base-dev openldap-dev libpq-dev python-dev libxml2-dev libxslt1-dev libldap2-dev libsasl2-dev libffi-dev python3-dev libssl-dev -y
+	apt-get install git net-tools lshw dos2unix gcc g++ netcat-openbsd freetype2-demos libatlas-base-dev ldap-utils libldap-dev libldap2 libldap2-dev libpq-dev libxml2-dev libxslt1-dev libldap2-dev libsasl2-dev libffi-dev libssl-dev apache2 libapache2-mod-uwsgi libapache2-mod-proxy-uwsgi apache2-utils python3 python3-dev python3-pip -y
 	HTTPD_CONFIG="/etc/apache2/apache2.conf"
 	HAPROXY_WI_VHOST_CONF="/etc/apache2/sites-enabled/haproxy-wi.conf"
 	HTTPD_NAME="apache2"
 	HTTPD_PORTS="/etc/apache2/ports.conf"
 	
 	if [[ $MINSTALL == 1 ]];then
-		apt-get install software-properties-common -y
-		apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
-		add-apt-repository 'deb [arch=amd64,i386,ppc64el] https://mirrors.evowise.com/mariadb/repo/10.1/ubuntu xenial main' -y
-		apt-get install mariadb-server -y
+		apt-get install software-properties-common mariadb-server mariadb-client -y
 	fi
-else
-	if [[ $(cat /etc/*-rele* |grep NAME |head -1) == 'NAME="CentOS Linux"' ]];then
-        yum -y install epel-release
-	fi
-	yum -y install https://centos7.iuscommunity.org/ius-release.rpm 
-	yum -y install git nmap-ncat net-tools python35u dos2unix python35u-pip mod_ssl httpd python35u-devel gcc-c++ openldap-devel python-devel python-jinja2 nodejs
-	npm install js-cookie --save
-	npm install bokehjs
-	HTTPD_CONFIG="/etc/httpd/conf/httpd.conf"
-	HAPROXY_WI_VHOST_CONF="/etc/httpd/conf.d/haproxy-wi.conf"
-	HTTPD_NAME="httpd"
-	HTTPD_PORTS=$HTTPD_CONFIG
-		
-	echo "Edit firewalld"
-	firewall-cmd --zone=public --add-port=$PORT/tcp --permanent
-	firewall-cmd --reload
-	setenforce 0
-	sed -i 's/SELINUX=enforcing/SELINUX=permissive/' /etc/selinux/config 
-	if [[ $MINSTALL == 1 ]];then
-	   yum -y install mariadb mariadb-server mysql-devel
-	fi
-	
 fi
  
-
-if [ $? -eq 1 ]
-then
-	echo "################################"
-	echo ""
-	echo ""
-	echo "Unable to install Required Packages Please check Yum config"
-	echo ""
-	echo ""
-	echo "################################"
-	exit 1
-fi
-echo "################################"
-echo ""
-echo ""
-echo -e "Updating Apache config and Configuring Virtual Host"
-echo ""
-echo ""
-echo "################################"
+echo -e "\n###########################################################"
+echo -e "# Updating Apache config and Configuring Virtual Host"
+echo -e "#"
 
 sudo sed -i "0,/^Listen .*/s//Listen $PORT/" $HTTPD_PORTS
 
-echo "################################"
-echo ""
-echo ""
-echo -e "Checking for Apache Vhost config"
-echo ""
-echo ""
-echo "################################"
+echo -e "# Checking for Apache Vhost config"
 
 sudo touch $HAPROXY_WI_VHOST_CONF
 /bin/cat $HAPROXY_WI_VHOST_CONF
 
 if [ $? -eq 1 ]
 then
-	echo "################################"
-	echo ""
-	echo ""
-	echo "Didnt Sense exisitng installation Proceeding ...."
-	echo ""
-	echo ""
-	echo "################################"
+
+	echo "# Didnt Sense exisitng installation Proceeding ...."
+	echo -e "###########################################################"
 	exit 1
 
 else
-	echo "################################"
-	echo ""
-	echo ""
-	echo -e "Creating VirtualHost for Apache"
-	echo ""
-	echo ""
-	echo "################################"
+	echo -e "# Creating VirtualHost for Apache"
+ 
 cat << EOF > $HAPROXY_WI_VHOST_CONF
 <VirtualHost *:$PORT>
         SSLEngine on
@@ -157,8 +98,12 @@ cat << EOF > $HAPROXY_WI_VHOST_CONF
         </FilesMatch>
 </VirtualHost>
 EOF
+	echo -e "###########################################################"
 fi 
 
+echo -e "\n###########################################################"
+echo -e "# Creating Checker HAproxy Service ...."
+echo -e "###########################################################"
 cat << EOF > /etc/systemd/system/multi-user.target.wants/checker_haproxy.service
 [Unit]
 Description=Haproxy backends state checker
@@ -199,6 +144,10 @@ cat << EOF > /etc/logrotate.d/checker
 }
 EOF
 
+echo -e "\n###########################################################"
+echo -e "# Creating Metrics HAproxy Service ...."
+echo -e "###########################################################"
+
 cat << EOF > /etc/systemd/system/multi-user.target.wants/metrics_haproxy.service
 [Unit]
 Description=Haproxy metrics
@@ -238,6 +187,10 @@ cat << EOF > /etc/logrotate.d/metrics
     sharedscripts
 }
 EOF
+
+echo -e "\n###########################################################"
+echo -e "# Creating Keep Alive HAproxy Service ...."
+echo -e "###########################################################"
 
 cat << EOF > /etc/systemd/system/keep_alive.service
 [Unit]
@@ -282,6 +235,10 @@ EOF
 sed -i 's/#$UDPServerRun 514/$UDPServerRun 514/g' /etc/rsyslog.conf
 sed -i 's/#$ModLoad imudp/$ModLoad imudp/g' /etc/rsyslog.conf
 
+echo -e "\n###########################################################"
+echo -e "# Activate HAproxy Services ...."
+echo -e "###########################################################"
+
 systemctl daemon-reload      
 systemctl restart logrotate
 systemctl restart rsyslog
@@ -298,95 +255,60 @@ if hash apt-get 2>/dev/null; then
 	sudo ln -s ../mods-available/cgi.load
 fi
 
-echo "################################"
-echo ""
-echo ""
-echo -e " Testing config"
-echo ""
-echo ""
-echo "################################"
+echo -e "\n###########################################################"
+echo -e "# Testing config ...."
 /usr/sbin/apachectl configtest 
 
 if [ $? -eq 1 ]
 then
-	echo "apache Configuration Has failed, Please verify Apache Config"
-   	echo ""
-	echo ""
-	echo "################################"
+	echo -e "# apache Configuration Has failed, Please verify Apache Config"
 	exit 1
 fi
-echo "################################"
-echo ""
-echo ""
-echo -e "Getting Latest software from The repository"
-echo ""
-echo ""
-echo "################################"
+echo -e "###########################################################"
 
-/usr/bin/git clone https://github.com/Aidaho12/haproxy-wi.git /var/www/$HOME_HAPROXY_WI
+echo -e "\n###########################################################"
+echo -e "# Getting Latest software from The repository."
+
+/usr/bin/git clone https://github.com/rezgui/haproxy-wi.git /var/www/$HOME_HAPROXY_WI
 
 if [ $? -eq 1 ]
 then
-   echo "Unable to clone The repository Please check connetivity to Github"
+   echo -e "# Unable to clone The repository Please check connetivity to Github"
    exit 1
 fi
-echo "################################"
-echo ""
-echo ""
-echo -e "Installing required Python Packages"
-echo ""
-echo ""
-echo "################################"
+echo -e "###########################################################"
+
+echo -e "\n###########################################################"
+echo -e "# Installing required Python Packages"
 sudo -H pip3 install --upgrade pip
 sudo pip3 install -r /var/www/$HOME_HAPROXY_WI/requirements.txt
-sudo pip3.5 install -r /var/www/$HOME_HAPROXY_WI/requirements.txt
 
 if [ $? -eq 1 ]
 then
-   echo "Unable to install Required Packages, Please check Pip error log and Fix the errors and Rerun the script"
+   echo "# Unable to install Required Packages, Please check Pip error log and Fix the errors and Rerun the script"
    exit 1
 else 
-	echo "################################"
-	echo ""
-	echo ""
-	echo -e "Installation Succesful"
-	echo ""
-	echo ""
-	echo "################################"
+	echo -e "# Installation Succesful"
+	echo -e "###########################################################"
 fi
 
 if [[ $MINSTALL = 1 ]];then
-	echo "################################"
-	echo ""
-	echo ""
-	echo -e "starting databse and applying config"
-	echo ""
-	echo ""
-	echo "################################"
+	echo -e "\n###########################################################"
+	echo -e "# starting Databse and applying config"
 	systemctl enable mariadb
 	systemctl start mariadb
 
 	if [ $? -eq 1 ]
 	then
-		echo "################################"
-		echo ""
-		echo ""
-		echo "Can't start Mariadb"
-		echo ""
-		echo ""
-		echo "################################"
+		echo "# Can't start Mariadb"
+	echo -e "###########################################################"
 		exit 1
 	fi
 
 	if [ $? -eq 1 ]
 	then
-		echo "################################"
-		echo ""
-		echo ""
-		echo "Unable to start Mariadb Service Please check logs"
-		echo ""
-		echo ""
-		echo "################################"
+		echo "# Unable to start Mariadb Service Please check logs"
+	echo -e "###########################################################"
 		exit 1
 	else 
 
@@ -394,73 +316,43 @@ if [[ $MINSTALL = 1 ]];then
 		mysql -u root -e "grant all on haproxywi.* to 'haproxy-wi'@'%' IDENTIFIED BY 'haproxy-wi';"
 		mysql -u root -e "grant all on haproxywi.* to 'haproxy-wi'@'localhost' IDENTIFIED BY 'haproxy-wi';"
 		mysql -u root -e "flush privileges;"
- 
-		echo "################################"
-		echo ""
-		echo ""
+  
 		echo -e "Databse has been created Succesfully and User permissions added"
-		echo ""
-		echo ""
-		echo "################################"
-
   fi
 fi
 
 
 if [[ $DB == 2 ]];then
-	echo "################################"
-	echo ""
-	echo ""
-	echo -e "Setting Application to use Mysql As a backend"
-	echo ""
-	echo ""
-	echo "################################"
+	echo -e "# Setting Application to use Mysql As a backend"
 	sed -i '0,/enable = 0/s//enable = 1/' /var/www/$HOME_HAPROXY_WI/app/haproxy-wi.cfg
 fi
 
 if [[ -n $IP ]];then
+	echo -e "# Setting Local or Remote to use Mysql As a backend"
 	sed -i "0,/mysql_host = 127.0.0.1/s//mysql_host = $IP/" /var/www/$HOME_HAPROXY_WI/app/haproxy-wi.cfg
 fi
-echo "################################"
-echo ""
-echo ""
-echo -e " Starting Services"
-echo ""
-echo ""
-echo "################################"
+echo -e "###########################################################"
+
+echo -e "\n###########################################################"
+echo -e "# Starting Services"
 
 systemctl enable $HTTPD_NAME; systemctl restart $HTTPD_NAME
 
 if [ $? -eq 1 ]
 then
-	echo "################################"
-	echo ""
-	echo ""
 	echo "Services Has Not  been started, Please check error logs"
-	echo ""
-	echo ""
-	echo "################################"
+	echo -e "###########################################################"
 
 else 
-	echo "################################"
-	echo ""
-	echo ""
-    echo -e "Services have been started, Please Evaluate the tool by adding a host / DNS ectry for  /etc/hosts file. \n This can be done by adding an entry like this \n 192.168.1.100 haprox-wi.example.com"
-	echo ""
-	echo ""
-	echo "################################"
+	echo -e "Services have been started, "
+ 	echo -e "Please Evaluate the tool by adding a host / DNS ectry for /etc/hosts file."
+ 	echo -e "This can be done by adding an exemple entry like this :"
+	echo -e "192.168.1.100 haprox-wi.example.com"
+	echo -e "###########################################################"
 
 fi 
 
 sed -i "s|^fullpath = .*|fullpath = /var/www/$HOME_HAPROXY_WI|g" /var/www/$HOME_HAPROXY_WI/app/haproxy-wi.cfg
-echo "################################"
-echo ""
-echo ""
-echo -e " Thank You for Evaluating Haproxy-wi"
-echo ""
-echo ""
-echo "################################"
-
 sudo mkdir /var/www/$HOME_HAPROXY_WI/app/certs
 sudo mkdir /var/www/$HOME_HAPROXY_WI/keys
 sudo mkdir /var/www/$HOME_HAPROXY_WI/configs/
@@ -470,7 +362,7 @@ sudo mkdir /var/www/$HOME_HAPROXY_WI/log/
 sudo sudo chmod +x /var/www/$HOME_HAPROXY_WI/app/*.py
 sudo chmod +x /var/www/$HOME_HAPROXY_WI/app/tools/*.py
 chmod +x /var/www/$HOME_HAPROXY_WI/update.sh
-sudo ln -s /usr/bin/python3.5 /usr/bin/python3
+
 
 cd /var/www/$HOME_HAPROXY_WI/app
 ./create_db.py
@@ -481,5 +373,9 @@ else
 	sudo chown -R apache:apache /var/www/$HOME_HAPROXY_WI/
 	sudo chown -R apache:apache /var/log/httpd/
 fi
+
+echo -e "\n###########################################################"
+echo -e "# Thank You for Evaluating Haproxy-wi"
+echo -e "###########################################################"
 
 exit 0
