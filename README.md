@@ -1,15 +1,8 @@
 # Haproxy web interface
-Web interface(user-friendly web GUI, alerting, monitoring and secure) for managing Haproxy servers. Leave your [feedback](https://github.com/Aidaho12/haproxy-wi/issues)
-
-# Donate
-Support the project
-[![Donate](https://img.shields.io/badge/PayPal-Donate-brightgreen.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5XVQTMKQS57NE&lc=US&Z3JncnB0=) or [Patreon](https://www.patreon.com/haproxy_wi/overview)
+Web interface(user-friendly web GUI, alerting, monitoring and secure) for managing Haproxy servers. Leave your [feedback](https://github.com/rezgui/haproxy-wi/issues)
 
 # Youtube
 [Demo video](https://www.youtube.com/channel/UCo0lCg24j-H4f0S9kMjp-_w)
-
-# Twitter
-Began to lead a [Twitter](https://twitter.com/haproxy_wi), subscribe! I will write there about all the changes and news
 
 ![alt text](image/haproxy-wi-config-show.jpeg "Show config page")
 
@@ -47,7 +40,7 @@ Began to lead a [Twitter](https://twitter.com/haproxy_wi), subscribe! I will wri
 # Install
 The installer will ask you a few questions
 ```
-$ git clone https://github.com/Aidaho12/haproxy-wi.git /var/www/haproxy-wi
+$ git clone https://github.com/rezgui/haproxy-wi.git /var/www/haproxy-wi
 $ cd /var/www/haproxy-wi
 $ chmod +x install.sh
 $ sudo ./install.sh
@@ -56,7 +49,7 @@ $ sudo ./install.sh
 For install just clone:
 ```
 $ cd /var/www/
-$ git clone https://github.com/Aidaho12/haproxy-wi.git /var/www/haproxy-wi
+$ git clone https://github.com/rezgui/haproxy-wi.git /var/www/haproxy-wi
 $ chown -R apache:apache haproxy-wi/
 Or if use Debian/Ubuntu:
 $ chown -R www-data:www-data haproxy-wi/
@@ -97,14 +90,14 @@ For Apache do virtualhost with cgi-bin. Like this:
 ```
 # Docker
 ```
-docker service create --detach=false --name haproxy-wi --mount type=volume,src=haproxy-wi,dst=/var/www/haproxy-wi/app -p 8080:80 aidaho/haproxy-wi
+docker service create --detach=false --name haproxy-wi --mount type=volume,src=haproxy-wi,dst=/var/www/haproxy-wi/app -p 8080:80 rezgui/haproxy-wi
 ```
 or
 ```
-docker run -d --name haproxy-wi -v haproxy-wi:/var/www/haproxy-wi/app -p 8080:80 aidaho/haproxy-wi 
+docker run -d --name haproxy-wi -v haproxy-wi:/var/www/haproxy-wi/app -p 8080:80 rezgui/haproxy-wi 
 ```
 # OS support
-HAProxy-WI was tested on EL 7, and all scripts too. Debian/Ubuntu OS support at 'beta' stage, may work not correct
+HAProxy-WI was tested on Debian/Ubuntu OS support at 'beta' stage, may work not correct
 
 # Database support
 
@@ -181,6 +174,6 @@ If you see plain text, check section "Directory" in httpd conf
 
 # Further development and support
 
-Offer your ideas and wishes, ask questions. All this is [welcomed](https://github.com/Aidaho12/haproxy-wi/issues)
+Offer your ideas and wishes, ask questions. All this is [welcomed](https://github.com/rezgui/haproxy-wi/issues)
 
 
